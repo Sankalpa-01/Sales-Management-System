@@ -33,3 +33,8 @@ A full-stack Sales Management System built with:
 - 💰 Record and view payments
 - 📈 Dashboard with sales analytics and inventory alerts
 - 📄 AI-generated summaries for performance/feedback (optional extension)
+
+## LOGIN : 
+gmail : lalu@gmail.com
+password : lalu123
+you can logout and login with this email and password.
