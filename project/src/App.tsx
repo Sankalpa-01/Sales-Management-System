@@ -9,10 +9,12 @@ import Reports from './pages/Reports';
 import Auth from './pages/Auth';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
+import { SocketProvider } from './context/SocketContext';
 
 function App() {
   return (
     <AuthProvider>
+      <SocketProvider>
       <Router>
         <Routes>
           <Route path="/auth" element={<Auth />} />
@@ -36,6 +38,7 @@ function App() {
           />
         </Routes>
       </Router>
+      </SocketProvider>
     </AuthProvider>
   );
 }
