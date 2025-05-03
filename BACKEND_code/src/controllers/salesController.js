@@ -40,6 +40,10 @@ const createSale = async (req, res, next) => {
         }
 
         const sale_id = await Sale.createSale(user_id, customer_id, total_amount, items);
+
+        const io = req.app.get('io');
+        io.emit('salesUpdate', { sale_id, user_id, customer_id, total_amount, items});
+
         res.status(201).json({ message: 'Sale created successfully', sale_id });
     } catch (err) {
         console.error('Error creating sale:', err);
