@@ -72,8 +72,8 @@ const Payments: React.FC = () => {
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-bold mb-4">Process Payment</h2>
+    <div className="p-6 ">
+      <h2 className="text-2xl font-bold mb-4 my-4">Process Payment</h2>
       <form
         onSubmit={handlePaymentSubmit}
         className="space-y-4 bg-white p-4 rounded shadow-md w-full max-w-md"
@@ -114,17 +114,16 @@ const Payments: React.FC = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+          className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-800"
         >
           Submit Payment
         </button>
       </form>
 
-      <h3 className="text-lg font-semibold mt-8 mb-2">Payment History</h3>
-      <div className="overflow-x-auto">
-        {/* Payment History Table */}
+      <h3 className="text-2xl font-bold mt-8 mb-2">Payment History</h3>
+      <div className="overflow-x-auto my-4">
         <table className="min-w-full table-auto text-sm border-collapse">
-          <thead className="bg-blue-600 text-white">
+          <thead className="bg-slate-800 text-white">
             <tr>
               <th className="p-3 text-left">Payment ID</th>
               <th className="p-3 text-left">Sale ID</th>

@@ -44,18 +44,13 @@ export default function Sales() {
       setError(null);
       try {
         const data = await getAllSales();
-        // Ensure total_amount is a number after fetching
         const processedData = data.data.map((sale: ApiSale) => ({
           ...sale,
           total_amount: typeof sale.total_amount === 'string' ? parseFloat(sale.total_amount) : sale.total_amount,
         }));
         setSales(processedData);
       } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message || 'Failed to fetch sales');
-        } else {
-          setError('Failed to fetch sales');
-        }
+        setError(err instanceof Error ? err.message : 'Failed to fetch sales');
       } finally {
         setLoading(false);
       }
@@ -70,11 +65,7 @@ export default function Sales() {
       await deleteSale(saleId);
       setSales(sales.filter((sale) => sale.sale_id !== saleId));
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message || 'Failed to delete sale');
-      } else {
-        setError('Failed to delete sale');
-      }
+      setError(err instanceof Error ? err.message : 'Failed to delete sale');
     } finally {
       setDeleteLoading(null);
     }
@@ -134,30 +125,23 @@ export default function Sales() {
       };
 
       const result = await createSale(submissionData);
-      setSales([ 
-        { ...result.data, total_amount: Number(result.data.total_amount) },
-        ...sales,
-      ]); // Add the new sale to the beginning of the list and ensure total_amount is a number
+      setSales([{ ...result.data, total_amount: Number(result.data.total_amount) }, ...sales]);
       setShowCreateModal(false);
       setNewSale({
         user_id: '',
         customer_id: '',
-        items: [{ product_id: '', quantity: 1, price: '' }],
+        items: [{ product_id: '', quantity: 1, price: '' }]
       });
       setError(null);
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message || 'Failed to create sale');
-      } else {
-        setError('Failed to create sale');
-      }
+      setError(err instanceof Error ? err.message : 'Failed to create sale');
     }
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold text-gray-900">Sales</h1>
+    <div className="space-y-6 px-4 sm:px-6 lg:px-8 py-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <h1 className="text-3xl font-bold text-gray-900 my-6">Sales</h1>
         <button
           className="bg-indigo-600 text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-indigo-700 transition-colors"
           onClick={() => setShowCreateModal(true)}
@@ -181,73 +165,57 @@ export default function Sales() {
       {loading ? (
         <p>Loading sales data...</p>
       ) : error ? (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md">
-          {error}
-        </div>
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md">{error}</div>
       ) : filteredSales.length === 0 ? (
         <p>No sales found.</p>
       ) : (
-        <div className="bg-white shadow-md rounded-lg overflow-hidden">
+        <div className="bg-white shadow-md rounded-lg overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-indigo-600 text-white">
+            <thead className="bg-slate-800 text-white">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-sm font-medium">
-                  Sale ID
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-sm font-medium">
-                  Customer
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-sm font-medium">
-                  Sale Date
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-sm font-medium">
-                  Total Amount
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-sm font-medium">
-                  Items
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-sm font-medium">
-                  Actions
-                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium">Sale ID</th>
+                <th className="px-4 py-3 text-left text-sm font-medium">Customer</th>
+                <th className="px-4 py-3 text-left text-sm font-medium">Sale Date</th>
+                <th className="px-4 py-3 text-left text-sm font-medium">Total Amount</th>
+                <th className="px-4 py-3 text-left text-sm font-medium">Items</th>
+                <th className="px-4 py-3 text-left text-sm font-medium">Actions</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredSales.map((sale) => (
                 <tr key={sale.sale_id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {sale.sale_id}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-4 py-3 text-sm text-gray-900">{sale.sale_id}</td>
+                  <td className="px-4 py-3 text-sm text-gray-500">
                     {sale.customer_name || `Customer ID: ${sale.customer_id}`}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-4 py-3 text-sm text-gray-500">
                     {new Date(sale.sale_date).toLocaleDateString()}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-4 py-3 text-sm text-gray-500">
                     {typeof sale.total_amount === 'number' ? `$${sale.total_amount.toFixed(2)}` : sale.total_amount}
                   </td>
                   <td
-                    className="px-6 py-4 whitespace-nowrap text-sm text-blue-600 hover:text-blue-800 cursor-pointer"
+                    className="px-4 py-3 text-sm text-blue-600 hover:text-blue-800 cursor-pointer"
                     onClick={() => navigate(`/sales/${sale.sale_id}`)}
                   >
                     View Items
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-3">
+                  <td className="px-4 py-3 text-sm space-x-3">
                     <div className="flex space-x-3">
                       <button
                         onClick={() => navigate(`/sales/edit/${sale.sale_id}`)}
-                        className="text-blue-600 hover:text-blue-800 transition duration-300"
+                        className="text-blue-600 hover:text-blue-800"
                       >
                         <Eye className="h-5 w-5" />
                       </button>
                       <button
                         onClick={() => handleDeleteSale(sale.sale_id)}
                         disabled={deleteLoading === sale.sale_id}
-                        className="text-red-600 hover:text-red-800 transition duration-300"
+                        className="text-red-600 hover:text-red-800"
                       >
                         {deleteLoading === sale.sale_id ? (
-                          <svg className="animate-spin h-5 w-5 text-red-600" viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M12 3a9 9 0 0 0 9 9H3a9 9 0 0 0 9-9m0 13a4 4 0 0 1-4-4h8a4 4 0 0 1-4 4" />
+                          <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                           </svg>
                         ) : (
                           <Trash2 className="h-5 w-5" />
@@ -262,32 +230,25 @@ export default function Sales() {
         </div>
       )}
 
-      {/* Add Sale Modal */}
+      {/* Create Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg sm:max-w-2xl overflow-y-auto max-h-screen">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-semibold">Create New Sale</h2>
-              <button
-                onClick={() => setShowCreateModal(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
+              <h2 className="text-xl font-semibold">Create New Sale</h2>
+              <button onClick={() => setShowCreateModal(false)} className="text-gray-500 hover:text-gray-700">
                 <X className="h-6 w-6" />
               </button>
             </div>
 
             {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-                {error}
-              </div>
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 mb-4 rounded">{error}</div>
             )}
 
             <form onSubmit={handleCreateSale} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    User ID
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">User ID</label>
                   <input
                     type="number"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
@@ -297,9 +258,7 @@ export default function Sales() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Customer ID
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Customer ID</label>
                   <input
                     type="number"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
@@ -313,48 +272,36 @@ export default function Sales() {
               <div>
                 <h3 className="text-sm font-medium text-gray-700 mb-2">Items</h3>
                 {newSale.items.map((item, index) => (
-                  <div key={index} className="flex items-center space-x-4 mb-2">
-                    <div>
-                      <label className="block text-sm text-gray-700 mb-1">Product ID</label>
-                      <input
-                        type="number"
-                        value={item.product_id}
-                        onChange={(e) =>
-                          handleItemChange(index, 'product_id', e.target.value)
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-gray-700 mb-1">Quantity</label>
-                      <input
-                        type="number"
-                        value={item.quantity}
-                        onChange={(e) =>
-                          handleItemChange(index, 'quantity', e.target.value)
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                        min="1"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-gray-700 mb-1">Price</label>
-                      <input
-                        type="number"
-                        value={item.price}
-                        onChange={(e) =>
-                          handleItemChange(index, 'price', e.target.value)
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                        required
-                      />
-                    </div>
+                  <div key={index} className="flex flex-wrap gap-2 mb-2">
+                    <input
+                      type="number"
+                      placeholder="Product ID"
+                      value={item.product_id}
+                      onChange={(e) => handleItemChange(index, 'product_id', e.target.value)}
+                      className="flex-1 min-w-[80px] px-3 py-2 border border-gray-300 rounded-md"
+                      required
+                    />
+                    <input
+                      type="number"
+                      placeholder="Qty"
+                      value={item.quantity}
+                      onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
+                      className="flex-1 min-w-[60px] px-3 py-2 border border-gray-300 rounded-md"
+                      min="1"
+                      required
+                    />
+                    <input
+                      type="number"
+                      placeholder="Price"
+                      value={item.price}
+                      onChange={(e) => handleItemChange(index, 'price', e.target.value)}
+                      className="flex-1 min-w-[80px] px-3 py-2 border border-gray-300 rounded-md"
+                      required
+                    />
                     <button
                       type="button"
                       onClick={() => handleRemoveItem(index)}
-                      className="text-red-600 hover:text-red-800 transition duration-300"
+                      className="text-red-600 hover:text-red-800"
                     >
                       Remove
                     </button>
@@ -363,13 +310,13 @@ export default function Sales() {
                 <button
                   type="button"
                   onClick={handleAddItem}
-                  className="text-blue-600 hover:text-blue-800 transition duration-300"
+                  className="text-blue-600 hover:text-blue-800 mt-1"
                 >
                   Add Item
                 </button>
               </div>
 
-              <div className="mt-4 flex justify-end space-x-2">
+              <div className="flex justify-end gap-2 mt-4">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}

@@ -46,17 +46,22 @@ const Dashboard: React.FC = () => {
       {
         label: 'Total Sales ($)',
         data: Object.values(salesData),
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-        borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1,
+        backgroundColor: 'rgba(34,197,94,0.5)',
+        borderColor: 'rgba(34,197,94,1)',
+        borderWidth: 2,
+        borderRadius: 6,
       },
     ],
   };
 
-  return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4">Real-Time Sales Dashboard</h1>
-      <Bar data={chartData} />
+   return (
+    <div className="min-h-screen bg-gradient-to-tr from-indigo-50 via-white to-teal-50 p-6">
+      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-4xl mx-auto">
+        <h1 className="text-4xl font-extrabold text-gray-800 mb-6 text-center">
+          Real-Time Sales Dashboard
+        </h1>
+        <Bar data={chartData} />
+      </div>
     </div>
   );
 };

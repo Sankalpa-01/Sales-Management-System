@@ -16,7 +16,6 @@ export default function Customers() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch customers from the API
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
@@ -36,7 +35,6 @@ export default function Customers() {
     customer.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Handle fetching customer by ID
   const handleFetchCustomerById = async (customerId: number) => {
     try {
       const response = await getCustomerById(customerId);
@@ -47,7 +45,6 @@ export default function Customers() {
     }
   };
 
-  // Handle deleting a customer
   const handleDeleteCustomer = async (customerId: number) => {
     try {
       await deleteCustomer(customerId);
@@ -58,7 +55,6 @@ export default function Customers() {
     }
   };
 
-  // Handle adding a new customer
   const handleAddCustomer = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -66,9 +62,9 @@ export default function Customers() {
 
     try {
       const response = await addCustomer(newCustomer);
-      setCustomers([...customers, response.data]); // Add new customer to the list
-      setShowModal(false); // Close the modal
-      setNewCustomer({ username: '', email: '', phone: '', address: '' }); // Reset form
+      setCustomers([...customers, response.data]);
+      setShowModal(false);
+      setNewCustomer({ username: '', email: '', phone: '', address: '' });
     } catch (error) {
       console.error('Error adding customer:', error);
       setError('Failed to add customer. Please try again.');
@@ -78,18 +74,20 @@ export default function Customers() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold text-gray-900">Customers</h1>
+    <div className="space-y-6 px-4 py-6">
+      {/* Header section */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 my-4">
+        <h1 className="text-3xl font-bold text-slate-800">Customers</h1>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-indigo-600 text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-indigo-700"
+          className="bg-indigo-600 text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-indigo-700 transition"
         >
           <Plus className="h-5 w-5" />
           Add Customer
         </button>
       </div>
 
+      {/* Search bar */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
         <input
@@ -101,41 +99,43 @@ export default function Customers() {
         />
       </div>
 
+      {/* Error display */}
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
           {error}
         </div>
       )}
 
-      <div className="bg-white shadow-md rounded-lg overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-indigo-600 text-white">
+      {/* Table */}
+      <div className="bg-white shadow-md rounded-lg overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200 text-sm">
+          <thead className="bg-slate-800 text-white">
             <tr>
-              <th className="px-6 py-3 text-left text-sm font-medium">Name</th>
-              <th className="px-6 py-3 text-left text-sm font-medium">Email</th>
-              <th className="px-6 py-3 text-left text-sm font-medium">Phone</th>
-              <th className="px-6 py-3 text-left text-sm font-medium">Address</th>
-              <th className="px-6 py-3 text-left text-sm font-medium">Actions</th>
+              <th className="px-4 py-3 text-left font-medium">Name</th>
+              <th className="px-4 py-3 text-left font-medium">Email</th>
+              <th className="px-4 py-3 text-left font-medium">Phone</th>
+              <th className="px-4 py-3 text-left font-medium">Address</th>
+              <th className="px-4 py-3 text-left font-medium">Actions</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {filteredCustomers.map((customer) => (
               <tr key={customer.customer_id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap">{customer.username}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{customer.email}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{customer.phone}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{customer.address}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-4 py-3 whitespace-nowrap">{customer.username}</td>
+                <td className="px-4 py-3 whitespace-nowrap">{customer.email}</td>
+                <td className="px-4 py-3 whitespace-nowrap">{customer.phone}</td>
+                <td className="px-4 py-3 whitespace-nowrap">{customer.address}</td>
+                <td className="px-4 py-3 whitespace-nowrap">
                   <div className="flex space-x-3">
                     <button
                       onClick={() => handleFetchCustomerById(customer.customer_id)}
-                      className="text-blue-600 hover:text-blue-800 transition duration-300"
+                      className="text-indigo-600 hover:text-indigo-800 transition"
                     >
                       <Edit className="h-5 w-5" />
                     </button>
                     <button
                       onClick={() => handleDeleteCustomer(customer.customer_id)}
-                      className="text-red-600 hover:text-red-800 transition duration-300"
+                      className="text-red-600 hover:text-red-800 transition"
                     >
                       <Trash2 className="h-5 w-5" />
                     </button>
@@ -147,22 +147,24 @@ export default function Customers() {
         </table>
       </div>
 
-      {/* Modal for Adding a Customer */}
+      {/* Add Customer Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-            <h2 className="text-2xl mb-4">Add New Customer</h2>
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md mx-4">
+            <h2 className="text-xl font-semibold text-slate-800 mb-4">Add New Customer</h2>
+
             {error && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
                 {error}
               </div>
             )}
+
             <form onSubmit={handleAddCustomer}>
               <div className="space-y-4">
                 <input
                   type="text"
                   placeholder="Name"
-                  className="w-full border border-gray-300 rounded-md px-4 py-2"
+                  className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   value={newCustomer.username}
                   onChange={(e) => setNewCustomer({ ...newCustomer, username: e.target.value })}
                   required
@@ -170,7 +172,7 @@ export default function Customers() {
                 <input
                   type="email"
                   placeholder="Email"
-                  className="w-full border border-gray-300 rounded-md px-4 py-2"
+                  className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   value={newCustomer.email}
                   onChange={(e) => setNewCustomer({ ...newCustomer, email: e.target.value })}
                   required
@@ -178,7 +180,7 @@ export default function Customers() {
                 <input
                   type="text"
                   placeholder="Phone"
-                  className="w-full border border-gray-300 rounded-md px-4 py-2"
+                  className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   value={newCustomer.phone}
                   onChange={(e) => setNewCustomer({ ...newCustomer, phone: e.target.value })}
                   required
@@ -186,12 +188,13 @@ export default function Customers() {
                 <input
                   type="text"
                   placeholder="Address"
-                  className="w-full border border-gray-300 rounded-md px-4 py-2"
+                  className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   value={newCustomer.address}
                   onChange={(e) => setNewCustomer({ ...newCustomer, address: e.target.value })}
                   required
                 />
               </div>
+
               <div className="mt-4 flex justify-end space-x-2">
                 <button
                   type="button"
@@ -199,14 +202,14 @@ export default function Customers() {
                     setShowModal(false);
                     setError(null);
                   }}
-                  className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md"
+                  className="bg-gray-200 text-slate-700 px-4 py-2 rounded-md hover:bg-gray-300"
                   disabled={isLoading}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-indigo-600 text-white px-6 py-2 rounded-md"
+                  className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700"
                   disabled={isLoading}
                 >
                   {isLoading ? 'Adding...' : 'Add Customer'}
