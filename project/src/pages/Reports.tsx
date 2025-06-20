@@ -1,19 +1,19 @@
-import { useState, useEffect } from 'react';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer, 
-  LineChart, 
-  Line, 
-  PieChart, 
-  Pie, 
-  Cell 
-} from 'recharts';
+import { useState, useEffect } from "react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
 
 // Type definitions
 type SaleItem = {
@@ -59,19 +59,21 @@ type SummaryData = {
   productSalesGrowth: number;
 };
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
 
 export default function Reports() {
   const [salesData, setSalesData] = useState<Sale[]>([]);
   const [productData, setProductData] = useState<ProductSalesData[]>([]);
-  const [monthlySalesData, setMonthlySalesData] = useState<MonthlySalesData[]>([]);
+  const [monthlySalesData, setMonthlySalesData] = useState<MonthlySalesData[]>(
+    []
+  );
   const [summary, setSummary] = useState<SummaryData>({
     totalSales: 0,
     averageOrderValue: 0,
     totalProductsSold: 0,
     salesGrowth: 0,
     aovGrowth: 0,
-    productSalesGrowth: 0
+    productSalesGrowth: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -80,32 +82,35 @@ export default function Reports() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        
+
         // Simulate API calls with mock data
         const [salesResult, productsResult] = await Promise.all([
           fetchMockSalesData(),
-          fetchMockProductsData()
+          fetchMockProductsData(),
         ]);
-        
+
         // Process sales data
         setSalesData(salesResult);
-        
+
         // Process products data
-        const processedProductData = processProductData(salesResult, productsResult);
+        const processedProductData = processProductData(
+          salesResult,
+          productsResult
+        );
         setProductData(processedProductData.productDataArray);
-        
+
         // Generate monthly sales data
         const monthlySales = generateMonthlySalesData(salesResult);
         setMonthlySalesData(monthlySales);
-        
+
         // Calculate summary metrics
         setSummary(calculateSummaryMetrics(salesResult, processedProductData));
-        
+
         setIsLoading(false);
       } catch (err) {
-        setError('Failed to fetch report data');
+        setError("Failed to fetch report data");
         setIsLoading(false);
-        console.error('Error fetching report data:', err);
+        console.error("Error fetching report data:", err);
       }
     };
 
@@ -121,52 +126,44 @@ export default function Reports() {
         customer_id: 1,
         user_id: 2,
         total_amount: 2000,
-        sale_date: '2023-04-01',
+        sale_date: "2023-04-01",
         items: [
           { product_id: 1, quantity: 1, price: 1200 },
-          { product_id: 2, quantity: 1, price: 800 }
-        ]
+          { product_id: 2, quantity: 1, price: 800 },
+        ],
       },
       {
         sale_id: 2,
         customer_id: 2,
         user_id: 3,
         total_amount: 150,
-        sale_date: '2023-04-05',
-        items: [
-          { product_id: 3, quantity: 1, price: 150 }
-        ]
+        sale_date: "2023-04-05",
+        items: [{ product_id: 3, quantity: 1, price: 150 }],
       },
       {
         sale_id: 3,
         customer_id: 3,
         user_id: 4,
         total_amount: 400,
-        sale_date: '2023-04-10',
-        items: [
-          { product_id: 4, quantity: 2, price: 200 }
-        ]
+        sale_date: "2023-04-10",
+        items: [{ product_id: 4, quantity: 2, price: 200 }],
       },
       {
         sale_id: 4,
         customer_id: 4,
         user_id: 5,
         total_amount: 1000,
-        sale_date: '2023-04-15',
-        items: [
-          { product_id: 5, quantity: 2, price: 500 }
-        ]
+        sale_date: "2023-04-15",
+        items: [{ product_id: 5, quantity: 2, price: 500 }],
       },
       {
         sale_id: 5,
         customer_id: 5,
         user_id: 2,
         total_amount: 500,
-        sale_date: '2023-04-20',
-        items: [
-          { product_id: 5, quantity: 1, price: 500 }
-        ]
-      }
+        sale_date: "2023-04-20",
+        items: [{ product_id: 5, quantity: 1, price: 500 }],
+      },
     ];
   };
 
@@ -175,53 +172,56 @@ export default function Reports() {
     return [
       {
         product_id: 1,
-        product_name: 'Laptop',
-        product_description: 'High-performance laptop',
+        product_name: "Laptop",
+        product_description: "High-performance laptop",
         price: 1200,
-        stock_quantity: 10
+        stock_quantity: 10,
       },
       {
         product_id: 2,
-        product_name: 'Smartphone',
-        product_description: 'Latest model smartphone',
+        product_name: "Smartphone",
+        product_description: "Latest model smartphone",
         price: 800,
-        stock_quantity: 15
+        stock_quantity: 15,
       },
       {
         product_id: 3,
-        product_name: 'Headphones',
-        product_description: 'Noise-cancelling headphones',
+        product_name: "Headphones",
+        product_description: "Noise-cancelling headphones",
         price: 150,
-        stock_quantity: 30
+        stock_quantity: 30,
       },
       {
         product_id: 4,
-        product_name: 'Smartwatch',
-        product_description: 'Fitness tracking smartwatch',
+        product_name: "Smartwatch",
+        product_description: "Fitness tracking smartwatch",
         price: 200,
-        stock_quantity: 25
+        stock_quantity: 25,
       },
       {
         product_id: 5,
-        product_name: 'Tablet',
-        product_description: '10-inch tablet with stylus support',
+        product_name: "Tablet",
+        product_description: "10-inch tablet with stylus support",
         price: 500,
-        stock_quantity: 20
-      }
+        stock_quantity: 20,
+      },
     ];
   };
 
   // Data processing functions
   const processProductData = (sales: Sale[], products: Product[]) => {
-    const productSalesMap = new Map<number, {
-      product_id: number;
-      name: string;
-      description: string;
-      price: number;
-      stock: number;
-      quantitySold: number;
-      revenue: number;
-    }>();
+    const productSalesMap = new Map<
+      number,
+      {
+        product_id: number;
+        name: string;
+        description: string;
+        price: number;
+        stock: number;
+        quantitySold: number;
+        revenue: number;
+      }
+    >();
 
     // Initialize product sales map with all products
     products.forEach((product) => {
@@ -232,14 +232,14 @@ export default function Reports() {
         price: product.price,
         stock: product.stock_quantity,
         quantitySold: 0,
-        revenue: 0
+        revenue: 0,
       });
     });
-    
+
     // Calculate sales for each product
     let totalQuantitySold = 0;
     let totalRevenue = 0;
-    
+
     sales.forEach((sale) => {
       sale.items.forEach((item) => {
         const productInfo = productSalesMap.get(item.product_id);
@@ -251,89 +251,115 @@ export default function Reports() {
         }
       });
     });
-    
+
     // Convert map to array for charts
     const productDataArray = Array.from(productSalesMap.values())
-      .filter(product => product.quantitySold > 0)
-      .map(product => ({
+      .filter((product) => product.quantitySold > 0)
+      .map((product) => ({
         name: product.name,
         sales: product.quantitySold,
-        revenue: product.revenue
+        revenue: product.revenue,
       }));
-    
+
     return {
       productDataArray,
       totalQuantitySold,
-      totalRevenue
+      totalRevenue,
     };
   };
 
   const generateMonthlySalesData = (sales: Sale[]): MonthlySalesData[] => {
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const monthlyData: MonthlySalesData[] = Array(12).fill(null).map((_, i) => ({
-      month: monthNames[i],
-      sales: 0
-    }));
-    
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const monthlyData: MonthlySalesData[] = Array(12)
+      .fill(null)
+      .map((_, i) => ({
+        month: monthNames[i],
+        sales: 0,
+      }));
+
     sales.forEach((sale) => {
       const saleDate = new Date(sale.sale_date);
       const monthIndex = saleDate.getMonth();
       monthlyData[monthIndex].sales += sale.total_amount;
     });
-    
-    const nonEmptyMonths = monthlyData.filter(m => m.sales > 0);
+
+    const nonEmptyMonths = monthlyData.filter((m) => m.sales > 0);
     return nonEmptyMonths.length > 0 ? nonEmptyMonths : monthlyData.slice(6);
   };
 
   const calculateSummaryMetrics = (
-    sales: Sale[], 
-    { totalQuantitySold, totalRevenue }: { totalQuantitySold: number, totalRevenue: number }
+    sales: Sale[],
+    {
+      totalQuantitySold,
+      totalRevenue,
+    }: { totalQuantitySold: number; totalRevenue: number }
   ): SummaryData => {
-    const avgOrderValue = sales.length > 0 
-      ? totalRevenue / sales.length
-      : 0;
-    
+    const avgOrderValue = sales.length > 0 ? totalRevenue / sales.length : 0;
+
     return {
       totalSales: totalRevenue,
       averageOrderValue: avgOrderValue,
       totalProductsSold: totalQuantitySold,
       salesGrowth: 8.5, // Would come from comparing to previous period
       aovGrowth: -2.1, // Would come from comparing to previous period
-      productSalesGrowth: 12.3 // Would come from comparing to previous period
+      productSalesGrowth: 12.3, // Would come from comparing to previous period
     };
   };
 
   if (isLoading) {
-    return <div className="flex justify-center items-center h-64">Loading reports...</div>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        Loading reports...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-red-500 text-center h-64 flex items-center justify-center">{error}</div>;
+    return (
+      <div className="text-red-500 text-center h-64 flex items-center justify-center">
+        {error}
+      </div>
+    );
   }
 
   return (
     <div className="space-y-8 p-6">
-      <h1 className="text-2xl font-semibold text-gray-900">Sales Management Reports</h1>
+      <h1 className="text-2xl font-semibold text-gray-900">
+        Sales Management Reports
+      </h1>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <SummaryCard 
-          title="Total Sales" 
-          value={summary.totalSales} 
-          isCurrency 
-          growth={summary.salesGrowth} 
+        <SummaryCard
+          title="Total Sales"
+          value={summary.totalSales}
+          isCurrency
+          growth={summary.salesGrowth}
         />
-        <SummaryCard 
-          title="Average Order Value" 
-          value={summary.averageOrderValue} 
-          isCurrency 
-          growth={summary.aovGrowth} 
+        <SummaryCard
+          title="Average Order Value"
+          value={summary.averageOrderValue}
+          isCurrency
+          growth={summary.aovGrowth}
         />
-        <SummaryCard 
-          title="Total Products Sold" 
-          value={summary.totalProductsSold} 
-          isCurrency={false} 
-          growth={summary.productSalesGrowth} 
+        <SummaryCard
+          title="Total Products Sold"
+          value={summary.totalProductsSold}
+          isCurrency={false}
+          growth={summary.productSalesGrowth}
         />
       </div>
 
@@ -345,15 +371,18 @@ export default function Reports() {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis />
-              <Tooltip 
-                formatter={(value) => [`₹${Number(value).toFixed(2)}`, 'Revenue']} 
+              <Tooltip
+                formatter={(value) => [
+                  `₹${Number(value).toFixed(2)}`,
+                  "Revenue",
+                ]}
               />
               <Legend />
-              <Line 
-                type="monotone" 
-                dataKey="sales" 
-                stroke="#4f46e5" 
-                name="Sales (₹)" 
+              <Line
+                type="monotone"
+                dataKey="sales"
+                stroke="#4f46e5"
+                name="Sales (₹)"
               />
             </LineChart>
           </ResponsiveContainer>
@@ -368,17 +397,17 @@ export default function Reports() {
               <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
               <Tooltip />
               <Legend />
-              <Bar 
-                yAxisId="left" 
-                dataKey="sales" 
-                fill="#8884d8" 
-                name="Units Sold" 
+              <Bar
+                yAxisId="left"
+                dataKey="sales"
+                fill="#8884d8"
+                name="Units Sold"
               />
-              <Bar 
-                yAxisId="right" 
-                dataKey="revenue" 
-                fill="#82ca9d" 
-                name="Revenue (₹)" 
+              <Bar
+                yAxisId="right"
+                dataKey="revenue"
+                fill="#82ca9d"
+                name="Revenue (₹)"
               />
             </BarChart>
           </ResponsiveContainer>
@@ -396,16 +425,22 @@ export default function Reports() {
                 fill="#8884d8"
                 dataKey="sales"
                 nameKey="name"
-                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                label={({ name, percent }) =>
+                  `${name}: ${(percent * 100).toFixed(0)}%`
+                }
               >
                 {productData.map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
                 ))}
               </Pie>
-              <Tooltip 
-                formatter={(value, _, { payload }) => 
-                  [`${value} units`, (payload as ProductSalesData).name]
-                } 
+              <Tooltip
+                formatter={(value, _, { payload }) => [
+                  `${value} units`,
+                  (payload as ProductSalesData).name,
+                ]}
               />
               <Legend />
             </PieChart>
@@ -448,7 +483,10 @@ export default function Reports() {
               ))}
               {salesData.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-6 py-4 text-center text-sm text-gray-500">
+                  <td
+                    colSpan={6}
+                    className="px-6 py-4 text-center text-sm text-gray-500"
+                  >
                     No sales data available
                   </td>
                 </tr>
@@ -469,17 +507,27 @@ type SummaryCardProps = {
   growth: number;
 };
 
-const SummaryCard = ({ title, value, isCurrency, growth }: SummaryCardProps) => (
+const SummaryCard = ({
+  title,
+  value,
+  isCurrency,
+  growth,
+}: SummaryCardProps) => (
   <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
     <h3 className="text-sm font-medium text-gray-500">{title}</h3>
     <p className="mt-2 text-2xl font-semibold text-gray-900">
-      {isCurrency ? '₹' : ''}
-      {isCurrency 
+      {isCurrency ? "₹" : ""}
+      {isCurrency
         ? value.toLocaleString(undefined, { maximumFractionDigits: 2 })
         : value}
     </p>
-    <p className={`mt-1 text-sm ${growth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-      {growth >= 0 ? '+' : ''}{growth}% from last month
+    <p
+      className={`mt-1 text-sm ${
+        growth >= 0 ? "text-green-600" : "text-red-600"
+      }`}
+    >
+      {growth >= 0 ? "+" : ""}
+      {growth}% from last month
     </p>
   </div>
 );
@@ -497,7 +545,10 @@ const ChartCard = ({ title, children }: ChartCardProps) => (
 );
 
 const TableHeader = ({ children }: { children: React.ReactNode }) => (
-  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+  <th
+    scope="col"
+    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+  >
     {children}
   </th>
 );
