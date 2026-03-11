@@ -2,3 +2,4 @@ generateHash.js
 .env
 src/config/ca.pem
 node_modules/
+database/data.sql
