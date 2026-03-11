@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useRef } from "react";
-import { io, Socket } from "socket.io-client";
+import io, { type Socket } from "socket.io-client";
 
 const SocketContext = createContext<Socket | null>(null);
 
@@ -15,7 +15,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <SocketContext.Provider value={socketRef.current as Socket | null}>
+    <SocketContext.Provider value={socketRef.current}>
       {children}
     </SocketContext.Provider>
   );

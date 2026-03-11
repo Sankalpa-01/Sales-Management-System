@@ -15,7 +15,7 @@ const processPayment = async (req, res, next) => {
             return res.status(400).json({ message: "Invalid amount" });
         }
 
-        const payment_id = await Payment.processPayment(sale_id, amount_paid, payment_method);
+        const payment_id = await Payment.processPayment(sale_id, amount_paid, payment_method, 'Completed');
         res.status(201).json({ message: "Payment initiated", payment_id });
     } catch (err) {
         console.error("Error processing payment:", err);
