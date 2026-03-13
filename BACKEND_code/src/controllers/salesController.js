@@ -45,6 +45,11 @@ const createSale = async (req, res, next) => {
         io.emit('salesUpdate', { sale_id, user_id, customer_id, total_amount, items});
 
         res.status(201).json({ message: 'Sale created successfully', sale_id });
+
+        req.io.emit('newSaleNotification', {
+            message: `New sale recorded! Total: ₹${total_amount}`,
+            customer_id: customer_id
+        });
     } catch (err) {
         console.error('Error creating sale:', err);
         next({ statusCode: 500, message: 'Database error', error: err });

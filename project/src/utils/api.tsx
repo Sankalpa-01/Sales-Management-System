@@ -103,4 +103,7 @@ export const getPaymentHistory = async () => {
 
 export const getPaymentsBySale = (saleId: number) => api.get(`/payments/${saleId}`);
 
+export const getAIChatResponse = (message: string) => 
+  api.post('/ai/chat', { message });
+
 export default api;
